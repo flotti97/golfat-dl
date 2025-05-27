@@ -2,7 +2,7 @@
 // @name         Golf.at Turnierergenisse drucken
 // @author       Florian
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Fügt einen Button zum Drucken der Brutto/Netto Tabellen hinzu
 // @match        https://www.golf.at/golfclubs/turniersuche/golfclub-maria-theresia-haag-h-/*
 // @grant        none
@@ -79,6 +79,38 @@
             });
         }
 
+        // Helper to extract tournament info
+        function getTournamentInfo() {
+            // Find the #myTabContent element
+            const tabContent = document.getElementById('myTabContent');
+            let name = '';
+            let date = '';
+            let type = '';
+            if (tabContent) {
+                // Get the <p> two elements above and <h2> three elements above
+                let p = tabContent;
+                let h2 = tabContent;
+                for (let i = 0; i < 2; i++) {
+                    if (p && p.previousElementSibling) p = p.previousElementSibling;
+                }
+                for (let i = 0; i < 3; i++) {
+                    if (h2 && h2.previousElementSibling) h2 = h2.previousElementSibling;
+                }
+                if (h2 && h2.tagName === 'H2') {
+                    name = h2.textContent.trim();
+                }
+                if (p && p.tagName === 'P') {
+                    // Example: "Datum: 27.05.2025 | Turnierart: Zählspiel"
+                    const text = p.textContent;
+                    const dateMatch = text.match(/Datum:\s*([0-9.]+)/i);
+                    if (dateMatch) date = dateMatch[1];
+                    const typeMatch = text.match(/Turnierart:\s*([^|]+)/i);
+                    if (typeMatch) type = typeMatch[1].trim();
+                }
+            }
+            return { name, date, type };
+        }
+
         // Print Brutto
         bruttoBtn.onclick = function () {
             bruttoBtn.disabled = true;
@@ -97,9 +129,14 @@
                 } else {
                     tableHtml = '<p>Keine Bruttowertung gefunden.</p>';
                 }
+                const info = getTournamentInfo();
+                let title = 'Bruttowertung';
+                if (info.name || info.date || info.type) {
+                    title = [info.name, info.date, info.type].filter(Boolean).join(' – ') + ' – Bruttowertung';
+                }
                 let html = `
         <div style="break-inside: avoid; page-break-inside: avoid;">
-            <h2>Bruttowertung</h2>
+            <h2>${title}</h2>
             ${tableHtml}
         </div>
         <style>
@@ -118,7 +155,7 @@
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
-                win.document.write('<html><head><title>Bruttowertung</title></head><body>' + html + '</body></html>');
+                win.document.write('<html><head><title>' + title + '</title></head><body>' + html + '</body></html>');
                 win.document.close();
                 win.focus();
                 win.onload = function () {
@@ -148,9 +185,14 @@
                 } else {
                     tableHtml = '<p>Keine Nettowertung gefunden.</p>';
                 }
+                const info = getTournamentInfo();
+                let title = 'Nettowertung';
+                if (info.name || info.date || info.type) {
+                    title = [info.name, info.date, info.type].filter(Boolean).join(' – ') + ' – Nettowertung';
+                }
                 let html = `
         <div style="break-inside: avoid; page-break-inside: avoid;">
-            <h2>Nettowertung</h2>
+            <h2>${title}</h2>
             ${tableHtml}
         </div>
         <style>
@@ -169,7 +211,7 @@
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
-                win.document.write('<html><head><title>Nettowertung</title></head><body>' + html + '</body></html>');
+                win.document.write('<html><head><title>' + title + '</title></head><body>' + html + '</body></html>');
                 win.document.close();
                 win.focus();
                 win.onload = function () {
