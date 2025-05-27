@@ -101,16 +101,10 @@
                 if (p && p.tagName === 'P') {
                     // Example: "01.05.2025 - Einzel (Stableford)"
                     const text = p.textContent;
-                    // Date: dd.mm.yyyy
-                    const dateMatch = text.match(/(\d{2}\.\d{2}\.\d{4})/);
-                    if (dateMatch) date = dateMatch[1];
-                    // Tournament type: after dash, before <br>
-                    const typeMatch = text.match(/\d{2}\.\d{2}\.\d{4}\s*-\s*([^\(<\n\r]+)/);
-                    if (typeMatch) type = typeMatch[1].trim();
-                    // If type is still empty, try to get from parentheses
-                    if (!type) {
-                        const parenMatch = text.match(/\(([^)]+)\)/);
-                        if (parenMatch) type = parenMatch[1].trim();
+                    const match = text.match(/(\d{2}\.\d{2}\.\d{4})\s*-\s*([^\n\r<]+)/);
+                    if (match) {
+                        date = match[1];
+                        type = match[2].trim();
                     }
                 }
             }
@@ -142,7 +136,7 @@
                 let tableHtml = '';
                 if (updatedBruttoTable) {
                     const clone = updatedBruttoTable.cloneNode(true);
-                    removeClassAttributes(clone);
+                    //removeClassAttributes(clone);
                     flattenTableCells(clone); // Flatten cells before printing
                     tableHtml = clone.outerHTML;
                 } else {
