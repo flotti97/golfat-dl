@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.4
 // @description  Fügt einen Button zum Drucken der Brutto/Netto Tabellen hinzu
-// @match        https://www.golf.at/golfclubs/turniersuche/golfclub-maria-theresia-haag-h-/405/k-pt-n-hook-lady-slice-des-vorstandes-er-ffnungshook-*
+// @match        https://www.golf.at/golfclubs/turniersuche/golfclub-maria-theresia-haag-h-/*
 // @grant        none
 // ==/UserScript==
 
