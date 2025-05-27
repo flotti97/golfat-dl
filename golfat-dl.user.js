@@ -1,7 +1,8 @@
 // ==UserScript==
-// @name         Golf.at Tabellen Drucken Button
+// @name         Golf.at Turnierergenisse drucken
+// @author       Florian
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Fügt einen Button zum Drucken der Brutto/Netto Tabellen hinzu
 // @match        https://www.golf.at/golfclubs/turniersuche/golfclub-maria-theresia-haag-h-/*
 // @grant        none
