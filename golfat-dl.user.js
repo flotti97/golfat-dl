@@ -79,15 +79,14 @@
             });
         }
 
-        // Helper to extract tournament info
+        // Helper to extract tournament info (event name, date, type)
         function getTournamentInfo() {
-            // Find the #myTabContent element
             const tabContent = document.getElementById('myTabContent');
             let name = '';
             let date = '';
             let type = '';
             if (tabContent) {
-                // Get the <p> two elements above and <h2> three elements above
+                // <p> two above, <h2> three above
                 let p = tabContent;
                 let h2 = tabContent;
                 for (let i = 0; i < 2; i++) {
@@ -100,15 +99,35 @@
                     name = h2.textContent.trim();
                 }
                 if (p && p.tagName === 'P') {
-                    // Example: "Datum: 27.05.2025 | Turnierart: Zählspiel"
+                    // Example: "01.05.2025 - Einzel (Stableford)"
                     const text = p.textContent;
-                    const dateMatch = text.match(/Datum:\s*([0-9.]+)/i);
+                    // Date: dd.mm.yyyy
+                    const dateMatch = text.match(/(\d{2}\.\d{2}\.\d{4})/);
                     if (dateMatch) date = dateMatch[1];
-                    const typeMatch = text.match(/Turnierart:\s*([^|]+)/i);
+                    // Tournament type: after dash, before <br>
+                    const typeMatch = text.match(/\d{2}\.\d{2}\.\d{4}\s*-\s*([^\(<\n\r]+)/);
                     if (typeMatch) type = typeMatch[1].trim();
+                    // If type is still empty, try to get from parentheses
+                    if (!type) {
+                        const parenMatch = text.match(/\(([^)]+)\)/);
+                        if (parenMatch) type = parenMatch[1].trim();
+                    }
                 }
             }
             return { name, date, type };
+        }
+
+        // Helper to create a nice title section
+        function createTitleSection(info, ratingType) {
+            let html = `<div style="margin-bottom:18px;">
+                <div style="font-size:20px;font-weight:bold;">${info.name || ''}</div>
+                <div style="font-size:15px;">
+                    ${info.date ? `<span style="margin-right:12px;">${info.date}</span>` : ''}
+                    ${info.type ? `<span style="margin-right:12px;">${info.type}</span>` : ''}
+                    <span style="margin-right:12px;font-weight:bold;">${ratingType}</span>
+                </div>
+            </div>`;
+            return html;
         }
 
         // Print Brutto
@@ -130,13 +149,10 @@
                     tableHtml = '<p>Keine Bruttowertung gefunden.</p>';
                 }
                 const info = getTournamentInfo();
-                let title = 'Bruttowertung';
-                if (info.name || info.date || info.type) {
-                    title = [info.name, info.date, info.type].filter(Boolean).join(' – ') + ' – Bruttowertung';
-                }
+                const titleSection = createTitleSection(info, 'Bruttowertung');
                 let html = `
         <div style="break-inside: avoid; page-break-inside: avoid;">
-            <h2>${title}</h2>
+            ${titleSection}
             ${tableHtml}
         </div>
         <style>
@@ -155,7 +171,7 @@
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
-                win.document.write('<html><head><title>' + title + '</title></head><body>' + html + '</body></html>');
+                win.document.write('<html><head><title>' + (info.name || 'Bruttowertung') + '</title></head><body>' + html + '</body></html>');
                 win.document.close();
                 win.focus();
                 win.onload = function () {
@@ -186,13 +202,10 @@
                     tableHtml = '<p>Keine Nettowertung gefunden.</p>';
                 }
                 const info = getTournamentInfo();
-                let title = 'Nettowertung';
-                if (info.name || info.date || info.type) {
-                    title = [info.name, info.date, info.type].filter(Boolean).join(' – ') + ' – Nettowertung';
-                }
+                const titleSection = createTitleSection(info, 'Nettowertung');
                 let html = `
         <div style="break-inside: avoid; page-break-inside: avoid;">
-            <h2>${title}</h2>
+            ${titleSection}
             ${tableHtml}
         </div>
         <style>
@@ -211,7 +224,7 @@
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
-                win.document.write('<html><head><title>' + title + '</title></head><body>' + html + '</body></html>');
+                win.document.write('<html><head><title>' + (info.name || 'Nettowertung') + '</title></head><body>' + html + '</body></html>');
                 win.document.close();
                 win.focus();
                 win.onload = function () {
