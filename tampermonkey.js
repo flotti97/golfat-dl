@@ -103,14 +103,17 @@
         </div>
         <style>
             body { font-family: Arial, sans-serif; margin: 0; }
-            h2 { margin-top: 30px; }
-            table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+            h2 { margin-top: 30px; page-break-after: avoid; }
+            table { width: 100%; border-collapse: collapse; font-size: 12pt; page-break-before: avoid; }
             th, td { border: 1px solid #333; padding: 4px 8px; }
             th { background: #eee; }
             @media print {
                 body { margin: 0; }
-                table { page-break-inside: avoid; }
+                table { page-break-inside: avoid; page-break-before: avoid; }
                 div { break-inside: avoid; page-break-inside: avoid; }
+                h2 { page-break-after: avoid; }
+                table { page-break-before: avoid; }
+                thead { display: table-header-group; }
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
@@ -151,14 +154,17 @@
         </div>
         <style>
             body { font-family: Arial, sans-serif; margin: 0; }
-            h2 { margin-top: 30px; }
-            table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+            h2 { margin-top: 30px; page-break-after: avoid; }
+            table { width: 100%; border-collapse: collapse; font-size: 12pt; page-break-before: avoid; }
             th, td { border: 1px solid #333; padding: 4px 8px; }
             th { background: #eee; }
             @media print {
                 body { margin: 0; }
-                table { page-break-inside: avoid; }
+                table { page-break-inside: avoid; page-break-before: avoid; }
                 div { break-inside: avoid; page-break-inside: avoid; }
+                h2 { page-break-after: avoid; }
+                table { page-break-before: avoid; }
+                thead { display: table-header-group; }
             }
         </style>`;
                 const win = window.open('', '', 'width=900,height=1200');
