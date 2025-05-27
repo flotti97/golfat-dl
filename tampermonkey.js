@@ -97,8 +97,7 @@
                     tableHtml = '<p>Keine Bruttowertung gefunden.</p>';
                 }
                 let html = `
-        <div style="break-inside: avoid; page-break-inside: avoid;">
-            <h2>Bruttowertung</h2>
+        <div>
             ${tableHtml}
         </div>
         <style>
